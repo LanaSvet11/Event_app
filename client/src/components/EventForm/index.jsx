@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const EventForm = () => {
+const EventForm = ({setEvents}) => {
   
   const [eventData, setEventData] = useState({
     title: '',
@@ -13,9 +13,6 @@ const EventForm = () => {
       role: ''
     }
   });
-
-
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEventData((prevState) => ({
@@ -23,7 +20,6 @@ const EventForm = () => {
       [name]: value
     }));
   };
-
   const handleOrganizerChange = (e) => {
 
     const { name, value } = e.target;
@@ -37,17 +33,22 @@ const EventForm = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("doing submit");
     e.preventDefault();
 
     try {
       const response = await axios({
-        url: '/server/events', 
         method: "POST",
+        url: '/server/events', 
         data: eventData
       });
-
-      
+      console.log(response);
+      // get the created event
       if (response.status >= 200 && response.status < 300) {
+        // ADD response.data to the events state!
+        setEvents((events) => {
+          return [...events, response.data]
+        });
         console.log('Event registered successfully:', response.data);
 
       } else {
@@ -56,16 +57,16 @@ const EventForm = () => {
     } catch (error) {
       console.error('There was an error sending the request:', error);
     }
-    setEventData({
-      title: '',
-      date: '',
-      location: '',
-      description: '',
-      organizer: {
-        name: '',
-        role: ''
-      }
-    })
+    // setEventData({
+    //   title: '',
+    //   date: '',
+    //   location: '',
+    //   description: '',
+    //   organizer: {
+    //     name: '',
+    //     role: ''
+    //   }
+    // })
   };
 
   return (
