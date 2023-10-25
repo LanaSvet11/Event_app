@@ -8,7 +8,7 @@ const Event = require('./models/Event.js');
 const PORT = 3000;
 
 const app = express();
-
+app.use(express.static(path.join(__dirname, "../client/dist")))
 
 // START MIDDLEWARE //
 app.use(express.json());
